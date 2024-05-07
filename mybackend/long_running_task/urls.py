@@ -1,0 +1,15 @@
+from django.urls import path
+from . import LongRunningTaskViews
+
+urlpatterns = [
+    path(
+        "start-task/<str:image_id>",
+        LongRunningTaskViews.LongRunningTaskCreateView.as_view(),
+        name="start_long_running_task",
+    ),
+    path(
+        "get-progress/<str:task_id>/",
+        LongRunningTaskViews.LongRunningTaskProgressView.as_view(),
+        name="get_long_running_task_progress",
+    ),
+]
