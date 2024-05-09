@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from uuid import uuid4
-from image_processing.data.ImageDTOModel import ImageDTOModel
+from .data.image_dto_model import ImageDTOModel
 from django_dto import DTOMixin
 # Create your models here.
 

@@ -1,7 +1,7 @@
 
 from kink import di
-from image_processing.data.repository.image_repositoryImpl import ImageRepositoryImpl
-from image_processing.data.service.image_serviceImpl import ImageServiceImpl
+from image_processing.data.repository.image_repository_impl import ImageRepositoryImpl
+from image_processing.data.service.image_service_impl import ImageServiceImpl
 from long_running_task._tasks.BaseTask import HumanDetection
 #from long_running_task._tasks.BaseTask import AnimalDetection
 def bootstrap_di() -> None:
