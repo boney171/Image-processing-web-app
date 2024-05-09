@@ -2,10 +2,9 @@ from image_processing.data.repository.image_repository import ImageRepository
 from image_processing.serializers import ImageAPISerializer
 from image_processing.serializers import ImageAPIDeserializer
 from typing import List, Optional
-from image_processing.data.ImageDTOModel import ImageDTOModel
-from image_processing.data.ImageAPIModel import ImageAPIModel
+from image_processing.data.image_dto_model import ImageDTOModel
+from image_processing.data.image_api_model import ImageAPIModel
 from image_processing.models import ImageDBModel
-from rest_framework.exceptions import ValidationError
 from rest_framework.exceptions import NotFound
 
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from .ImageAPIModel import ImageAPIModel
+from .image_api_model import ImageAPIModel
 from typing import Optional
 
 @dataclass

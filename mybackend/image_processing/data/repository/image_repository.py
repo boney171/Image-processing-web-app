@@ -2,8 +2,8 @@
 from mybackendCommon.repository.base_repository import RepositoryAsset
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from image_processing.data.ImageDTOModel import ImageDTOModel
-from image_processing.data.ImageAPIModel import ImageAPIModel
+from image_processing.data.image_dto_model import ImageDTOModel
+from image_processing.data.image_api_model import ImageAPIModel
 
 class ImageRepository(RepositoryAsset, ABC):
     @abstractmethod

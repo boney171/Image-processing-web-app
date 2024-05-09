@@ -1,4 +1,4 @@
-from image_processing.data.ImageAPIModel import ImageAPIModel
+from image_processing.data.image_api_model import ImageAPIModel
 from .image_service import ImageService
 from typing import List, Optional
 from rest_framework.exceptions import NotFound
@@ -48,3 +48,4 @@ class ImageServiceImpl(ImageService):
         )
 
         return image_dto.toAPIModel()
+

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from .TaskAPIModel import TaskAPIModel
+from .task_api_model import TaskAPIModel
 
 @dataclass
 class TaskDTOModel:

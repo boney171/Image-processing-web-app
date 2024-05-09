@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from image_processing.data.ImageAPIModel import ImageAPIModel
+from image_processing.data.image_api_model import ImageAPIModel
 from typing import List, Optional
 
 
