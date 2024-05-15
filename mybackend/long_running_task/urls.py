@@ -3,7 +3,7 @@ from . import LongRunningTaskViews
 
 urlpatterns = [
     path(
-        "start-task/<str:image_id>",
+        "start-task/<str:image_id>/<int:task>",
         LongRunningTaskViews.LongRunningTaskCreateView.as_view(),
         name="start_long_running_task",
     ),

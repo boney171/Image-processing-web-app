@@ -3,7 +3,7 @@ from rest_framework import status
 from .serializers import ImageAPISerializer
 from .serializers import ImageAPIDeserializer
 from rest_framework.exceptions import ValidationError, NotFound
-from mybackend.base_view import ImageView
+from mybackendCommon.view.image_base_view import ImageView
 
 class ImageDetailView(ImageView):
     def get(self, request, image_id):

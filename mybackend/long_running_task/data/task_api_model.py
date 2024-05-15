@@ -6,6 +6,7 @@ from typing import Optional
 @dataclass
 class TaskAPIModel:
     id: int
+    image_id: int
     status: str
     percentage: int
     result: Optional[str] = field(default=None)

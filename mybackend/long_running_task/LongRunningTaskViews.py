@@ -9,37 +9,37 @@ from long_running_task.api_responses.responses import (
 )
 from datetime import datetime
 from abc import ABC, abstractmethod
-from mybackend.base_view import ImageView
-
-         
-class LongRunningTaskCreateView(ImageView):
-    def post(self, request, image_id):
+from mybackendCommon.view.long_running_task_base_view import LongRunningTaskView
+from .serializers import TaskAPISerializer
+"""
+    Endpoint: http://127.0.0.1:8000/long_running_task/start-task/{image_id}/{task_number}
+"""
+class LongRunningTaskCreateView(LongRunningTaskView):
+    def post(self, request, image_id, task):
         try:
-            image = self.image_services.get_image_by_id(image_id)
 
-            task = wait.delay()
-            
-            return long_running_task_response(
-                task_id=task.id,
-                status= celery_app.AsyncResult(task.id).status,
-                created_at=datetime.now(),
-                location=f"http://127.0.0.1:8000/long_running_task/get-progress/{task.id}",
-                status_code=status.HTTP_202_ACCEPTED,
+            long_running_task = self.task_services.create_long_running_task(
+                image_id, task
             )
+
+            return long_running_task
         except NotFound:
             return Response(
                 {"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
-
-class LongRunningTaskProgressView(ImageView):
+"""
+    Endpoint: http://127.0.0.1:8000/long_running_task/get-progress/{task_id}
+"""
+class LongRunningTaskProgressView(LongRunningTaskView):
     def get(self, request, task_id):
-        task_result = celery_app.AsyncResult(task_id)
-        response = {
-            "task_id": task_id,
-            "status": task_result.status,
-        }
-
-        if task_result.status == "PROGRESS":
-            response.update(task_result.info)
-        return Response(response, status=status.HTTP_200_OK)
+        try:
+            
+            task_api_model = self.task_services.get_task_progress_by_id(task_id)
+            
+            return Response(TaskAPISerializer(task_api_model).data, status.HTTP_200_OK)
+            
+        except NotFound:
+            return Response(
+                {"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND
+            )
