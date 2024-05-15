@@ -28,10 +28,9 @@ before_task_publish.connect(task_before_publish)
 
 
 @shared_task(bind=True, task_track_started=True)
-def wait(self):
-    # from .models import TaskDBModel
-    # from mybackend.celery import app as celery_app
+def wait(self, *arg, **kwargs):
 
+    
     total_steps = 10
     for i in range(1, total_steps + 1):
         time.sleep(10)
@@ -53,8 +52,6 @@ def wait(self):
 
 
 def on_task_success(sender=None, result=None, **kwargs):
-    # from .models import TaskDBModel
-    # from mybackend.celery import app as celery_app
 
     task_id = sender.request.id
     TaskDBModel.objects.update_or_create(
@@ -72,3 +69,14 @@ def on_task_success(sender=None, result=None, **kwargs):
 
 
 task_success.connect(on_task_success)
+
+
+# Step to create iomplement different task
+
+# How to create my own task
+
+# How to submit multiple jobs
+
+# Use debugger
+
+# Run celery as debugger

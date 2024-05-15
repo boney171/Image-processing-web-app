@@ -13,7 +13,7 @@ class ImageDTOModel:
     meta_size_byte: int
     created_at: datetime
 
-    def toAPIModel(self) -> ImageAPIModel:
+    def to_api_model(self) -> ImageAPIModel:
         return ImageAPIModel(
             id=self.id,
             file_path=self.file_path,

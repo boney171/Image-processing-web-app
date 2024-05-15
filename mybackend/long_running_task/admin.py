@@ -6,6 +6,7 @@ from long_running_task.models import TaskDBModel
 class TaskDBAdmin(admin.ModelAdmin):
     list_display = [
         "id",
+        "image_id",
         "status",
         "percentage",
         "location",

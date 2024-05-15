@@ -7,26 +7,29 @@ from uuid import uuid4
 from image_processing.utils.helpers import save_file
 from kink import inject
 
+
 @inject
 class ImageServiceImpl(ImageService):
     def __init__(self, image_repository):
         self.image_repository = image_repository
 
     def get_image_by_id(self, image_id) -> Optional[ImageAPIModel]:
-        try:
-            image_dto = self.image_repository.get(image_id)
-
-            return image_dto.toAPIModel()
-        except NotFound:
+        
+        image_dto = self.image_repository.get(image_id)
+        
+        if image_dto is None:
             raise NotFound(f"No Image found with id: {image_id}")
 
+        return image_dto.to_api_model()
+
     def get_all_images(self) -> List[ImageAPIModel]:
+        
         image_dtos = self.image_repository.get_all()
 
         image_apis = []
 
         for dto in image_dtos:
-            image_apis.append(dto.toAPIModel())
+            image_apis.append(dto.to_api_model())
 
         return image_apis
 
@@ -48,4 +51,3 @@ class ImageServiceImpl(ImageService):
         )
 
         return image_dto.toAPIModel()
-
