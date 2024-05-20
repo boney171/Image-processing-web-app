@@ -24,7 +24,7 @@ def task_before_publish(headers, routing_key, **kwargs):
     )
 
 
-before_task_publish.connect(task_before_publish)
+#before_task_publish.connect(task_before_publish)
 
 
 @shared_task(bind=True, task_track_started=True)
@@ -68,7 +68,7 @@ def on_task_success(sender=None, result=None, **kwargs):
     print(f"Result: {result}")
 
 
-task_success.connect(on_task_success)
+#task_success.connect(on_task_success)
 
 
 # Step to create iomplement different task

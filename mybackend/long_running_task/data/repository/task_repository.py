@@ -22,7 +22,8 @@ class TaskRepository(RepositoryAsset, ABC):
     def upsert(self, task_api_model: TaskAPIModel) -> TaskDTOModel:
         raise NotImplementedError
 
-    def create(self, asset):
+    @abstractmethod
+    def create(self, task_id, image_id, percentage, result) -> TaskDTOModel:
         pass
     
     def update(self, asset_id, update_info):

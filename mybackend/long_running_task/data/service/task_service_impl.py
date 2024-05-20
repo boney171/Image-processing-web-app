@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from kink import inject
 from datetime import datetime
 from long_running_task.tasks import wait
+from mybackend.tasks.tasks import ImageProcessingTask
 from mybackend.celery import app as celery_app
 from long_running_task.api_responses.responses import (
     long_running_task_response,
@@ -18,7 +19,8 @@ class TaskServiceImpl(TaskService):
     def __init__(self, task_repository, image_repository):
         self.task_repository = task_repository
         self.image_repository = image_repository
-        
+    
+    
     def get_task_progress_by_id(self, task_id) -> Optional[TaskAPIModel]:
         
         task_dto = self.task_repository.get(task_id)
@@ -47,18 +49,19 @@ class TaskServiceImpl(TaskService):
     
         image_dto = self.image_repository.get(image_id)
 
-        
         if image_dto is None:
             raise NotFound(f"No Image found with id: {image_id}")
         
+        long_running_task = celery_app.tasks['test_base_task']
         
-        long_running_task = wait.delay(image_id)
+        task = long_running_task.delay(image_id)
+        
         
         return long_running_task_response(
-                task_id=long_running_task.id,
-                status= celery_app.AsyncResult(long_running_task.id).status,
+                task_id=task.id,
+                status= celery_app.AsyncResult(task.id).status,
                 created_at=datetime.now(),
-                location=f"http://127.0.0.1:8000/long_running_task/get-progress/{long_running_task.id}",
+                location=f"http://127.0.0.1:8000/long_running_task/get-progress/{task.id}",
                 status_code=status.HTTP_202_ACCEPTED,
             )
         

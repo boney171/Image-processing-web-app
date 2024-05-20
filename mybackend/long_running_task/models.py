@@ -14,6 +14,7 @@ class TaskDBModel(models.Model, DTOMixin):
         null=True,
         blank=True
     )
+    image_name = models.CharField(max_length=256, null=True, default="null" )
     status = models.CharField(max_length=10, null=False, default="INQUEUE")
     percentage = models.IntegerField(null=False, default=0)
     location = models.CharField(
