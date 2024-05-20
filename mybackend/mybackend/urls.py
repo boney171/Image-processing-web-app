@@ -19,15 +19,20 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from mybackend.di_container.bootstrap import bootstrap_di
+from kink import di
+from mybackend.celery import app as celery_app
+from mybackend.tasks.tasks import ImageProcessingTask
+from celery.signals import after_task_publish, task_success, task_failure
 
 bootstrap_di()
+celery_app.register_task( ImageProcessingTask(di["task_repository"], di["image_repository"]))
+
 
 urlpatterns = [
     path('image_processing/', include('image_processing.urls')),
     path('long_running_task/', include("long_running_task.urls")),
     path('admin/', admin.site.urls),
 ]
- 
 
 
 

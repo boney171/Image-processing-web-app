@@ -27,7 +27,7 @@ class TaskRepositoryImpl(TaskRepository):
 
     def upsert(self, task_api_model: TaskAPIModel) -> TaskDTOModel:
 
-        TaskDBModel.create_or_update(
+        saved_task_instance, _ = TaskDBModel.objects.create_or_update(
             id=TaskAPIModel.id,
             defaults={
                 "image_id": TaskAPIModel.image_id,
@@ -38,10 +38,20 @@ class TaskRepositoryImpl(TaskRepository):
             },
         )
 
-        saved_task_instance = TaskAPIModel.objects.get(pk=TaskAPIModel.id)
-
         return saved_task_instance.to_dto(TaskDTOModel)
 
+    def create(self, task_id, image_id, percentage, result) -> TaskDTOModel:
+        
+        saved_task = TaskDBModel.objects.create(
+            id = task_id,
+            image_id = image_id,
+            percentage = percentage,
+            result = result,
+            created_at = datetime.now()
+        )
+        
+        return saved_task.to_dto(TaskAPIModel)
+    
     def delete(self, asset_id):
         pass
         

@@ -11,6 +11,7 @@ from datetime import datetime
 from abc import ABC, abstractmethod
 from mybackendCommon.view.long_running_task_base_view import LongRunningTaskView
 from .serializers import TaskAPISerializer
+
 """
     Endpoint: http://127.0.0.1:8000/long_running_task/start-task/{image_id}/{task_number}
 """
