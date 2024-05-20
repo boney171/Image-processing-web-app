@@ -27,13 +27,13 @@ class TaskRepositoryImpl(TaskRepository):
 
     def upsert(self, task_api_model: TaskAPIModel) -> TaskDTOModel:
 
-        saved_task_instance, _ = TaskDBModel.objects.create_or_update(
-            id=TaskAPIModel.id,
+        saved_task_instance, _ = TaskDBModel.objects.update_or_create(
+            id=task_api_model.id,
             defaults={
-                "image_id": TaskAPIModel.image_id,
-                "status": TaskAPIModel.status,
-                "percentage": TaskAPIModel.percentage,
-                "result": TaskAPIModel.result,
+                "image_id": task_api_model.image_id,
+                "status": task_api_model.status,
+                "percentage": task_api_model.percentage,
+                "result": task_api_model.result,
                 "updated_at": datetime.now(),
             },
         )
