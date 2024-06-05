@@ -1,6 +1,5 @@
 from rest_framework.response import Response
 from rest_framework import status
-from .tasks import wait
 from mybackend.celery import app as celery_app
 from rest_framework.exceptions import ValidationError, NotFound
 from long_running_task.api_responses.responses import (

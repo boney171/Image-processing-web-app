@@ -18,7 +18,15 @@ class ImageRepositoryImpl(ImageRepository):
         except ImageDBModel.DoesNotExist:
             raise NotFound(f"No Image found with id: {image_id}")
 
+    def get_db_instance(self, image_id):
+        try:
+            image_instance = ImageDBModel.objects.get(pk=image_id)
 
+            return image_instance
+        
+        except ImageDBModel.DoesNotExist:
+            raise NotFound(f"No Image found with id: {image_id}")
+        
     def get_all(self) -> List[ImageDTOModel]:
         images = ImageDBModel.objects.all()
 

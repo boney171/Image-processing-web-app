@@ -5,7 +5,7 @@ from image_processing.data.service.image_service_impl import ImageServiceImpl
 from long_running_task._tasks.BaseTask import HumanDetection
 from long_running_task.data.repository.task_repository_impl import TaskRepositoryImpl
 from long_running_task.data.service.task_service_impl import TaskServiceImpl
-from mybackend.tasks.tasks import ImageProcessingTask
+from mybackend.tasks.base_task import ImageProcessingTask
 from django.apps import AppConfig
 
 def bootstrap_di() -> None:

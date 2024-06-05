@@ -50,4 +50,4 @@ class ImageServiceImpl(ImageService):
             )
         )
 
-        return image_dto.toAPIModel()
+        return image_dto.to_api_model()
