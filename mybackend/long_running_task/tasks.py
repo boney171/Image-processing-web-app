@@ -1,74 +1,65 @@
-from celery import shared_task
-from celery.signals import before_task_publish
-from celery.signals import task_success
 import time
 from datetime import datetime
 from kink import inject
 from .models import TaskDBModel
 from mybackend.celery import app as celery_app
+from mybackend.tasks.base_task import ImageProcessingTask
+import cv2
+from kink import di, inject
+import random
+from PIL import Image, ImageDraw
+import numpy as np
 
 
-def task_before_publish(headers, routing_key, **kwargs):
+class HumanDetectingTask(ImageProcessingTask):
+    name = "human_detecting_task"
 
-    task_id = headers.get("id")
-
-    TaskDBModel.objects.update_or_create(
-        id=task_id,
-        defaults={
-            "status": "INQUEUE",
-            "percentage": 0,
-            "location": f"http://127.0.0.1:8000/long_running_task/get-progress/{task_id}",
-            "result": f"http://127.0.0.1:8000/media/",
-            "created_at": datetime.now(),
-        },
-    )
+    def __init__(self, task_repository, image_repository):
+        super().__init__(task_repository, image_repository)
 
 
-#before_task_publish.connect(task_before_publish)
+class HumanDetectingTask(ImageProcessingTask):
+    name = "human_detecting_task"
+
+    def __init__(self, task_repository, image_repository):
+        super().__init__(task_repository, image_repository)
+
+    def run(self, image_id, *args, **kwargs):
+        try:
+            total_steps = 10
+            for i in range(1, total_steps + 1):
+                time.sleep(5)
+                percent_complete = (i / total_steps) * 100
+                self.update_state(
+                    state="PROGRESS", meta={"percent": f"{percent_complete:.0f}"}
+                )
+                self.update_progress_in_db(self.request.id)
+
+            image, file_path = self.load_image(image_id)
+
+            if image is None:
+                raise ValueError(f"Failed to load image from path: {file_path}")
+
+            width, height = image.size
+            self.draw_rectangular(
+                random.randint(0, width // 2),
+                random.randint(width // 2, width),
+                random.randint(0, height // 2),
+                random.randint(height // 2, height),
+                image,
+                "black",
+                5,
+            )
+
+            self.save_image(image, file_path)
+        except Exception as e:
+            print(f"Error: {e}")
+            raise e
+
+        return "Done"
 
 
-@shared_task(bind=True, task_track_started=True)
-def wait(self, *arg, **kwargs):
-
-    
-    total_steps = 10
-    for i in range(1, total_steps + 1):
-        time.sleep(10)
-        percent_complete = (i / total_steps) * 100
-        self.update_state(state="PROGRESS", meta={"percent": f"{percent_complete:.0f}"})
-
-        task = celery_app.AsyncResult(self.request.id)
-        task_entity, _ = TaskDBModel.objects.update_or_create(
-            id=self.request.id,
-            defaults={
-                "status": task.status,
-                "percentage": percent_complete,
-                "location": f"http://127.0.0.1:8000/long_running_task/get-progress/{self.request.id}",
-                "result": f"http://127.0.0.1:8000/media/{task.status}",
-                "updated_at": datetime.now(),
-            },
-        )
-    return "Done"
-
-
-def on_task_success(sender=None, result=None, **kwargs):
-
-    task_id = sender.request.id
-    TaskDBModel.objects.update_or_create(
-        id=task_id,
-        defaults={
-            "status": "SUCCESS",
-            "percentage": 100,
-            "location": f"http://127.0.0.1:8000/long_running_task/get-progress/task_id",
-            "result": f"http://127.0.0.1:8000/media/Success",
-            "updated_at": datetime.now(),
-        },
-    )
-    print(f"Task {sender.name} with ID {sender.request.id} was successful.")
-    print(f"Result: {result}")
-
-
-#task_success.connect(on_task_success)
+# task_success.connect(on_task_success)
 
 
 # Step to create iomplement different task

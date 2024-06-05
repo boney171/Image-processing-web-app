@@ -5,21 +5,21 @@ from rest_framework.exceptions import NotFound
 from rest_framework.exceptions import ValidationError
 from kink import inject
 from datetime import datetime
-from long_running_task.tasks import wait
-from mybackend.tasks.tasks import ImageProcessingTask
+from mybackend.tasks.base_task import ImageProcessingTask
 from mybackend.celery import app as celery_app
 from long_running_task.api_responses.responses import (
     long_running_task_response,
     standard_response,
 )
 from rest_framework import status
+import pdb
 
 @inject
 class TaskServiceImpl(TaskService):
     def __init__(self, task_repository, image_repository):
         self.task_repository = task_repository
         self.image_repository = image_repository
-    
+        
     
     def get_task_progress_by_id(self, task_id) -> Optional[TaskAPIModel]:
         
@@ -46,16 +46,17 @@ class TaskServiceImpl(TaskService):
         pass
     
     def create_long_running_task(self, image_id, task):
-    
+        
+        print("Task ", task)
+        
         image_dto = self.image_repository.get(image_id)
 
         if image_dto is None:
             raise NotFound(f"No Image found with id: {image_id}")
         
-        long_running_task = celery_app.tasks['test_base_task']
+        long_running_task = celery_app.tasks['human_detecting_task']
         
         task = long_running_task.delay(image_id)
-        
         
         return long_running_task_response(
                 task_id=task.id,

@@ -1,12 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 import os
 from long_running_task._tasks.BaseTask import HumanDetection
+import multiprocessing
 from celery import Celery
 from django.conf import settings
 from kink import di
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mybackend.settings')
-
+multiprocessing.set_start_method('spawn')
 app = Celery('mybackend')
 
 
