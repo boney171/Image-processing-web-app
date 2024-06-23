@@ -15,3 +15,17 @@ def long_running_task_response( task_id, status, created_at, location, status_co
         "createdAt": created_at,
         "location": location,
     }, status=status_code)
+    
+def long_running_tasks_response(tasks, status_code=status.HTTP_200_OK):
+    tasks_list = []
+    for task in tasks:
+        tasks_list.append({
+            "taskId": task['taskId'],
+            "status": task['status'],
+            "createdAt": task['createdAt'],
+            "location": task['location']
+        })
+    
+    return Response({
+        "tasks": tasks_list
+    }, status=status_code)
