@@ -9,11 +9,12 @@ from mybackend.tasks.base_task import ImageProcessingTask
 from mybackend.celery import app as celery_app
 from long_running_task.api_responses.responses import (
     long_running_task_response,
+    long_running_tasks_response,
     standard_response,
 )
 from rest_framework import status
 import pdb
-
+import uuid
 @inject
 class TaskServiceImpl(TaskService):
     def __init__(self, task_repository, image_repository):
@@ -65,4 +66,32 @@ class TaskServiceImpl(TaskService):
                 location=f"http://127.0.0.1:8000/long_running_task/get-progress/{task.id}",
                 status_code=status.HTTP_202_ACCEPTED,
             )
+    
+    def create_long_running_tasks(self, image_ids, task):
+        tasks_responses = []
+        wait = 0
+
+        print(image_ids)
+        for image_id in image_ids:
+            image_uuid = uuid.UUID(str(image_id))
+
+            image_dto = self.image_repository.get(image_uuid)
+            if image_dto is None:
+                raise NotFound(f"No Image found with id: {image_uuid}")
+
+            long_running_task = celery_app.tasks['human_detecting_task']
+            task_result = long_running_task.apply_async(args=[image_uuid], countdown=wait)
+
+            task_response = {
+                "taskId": task_result.id,
+                "status": celery_app.AsyncResult(task_result.id).status,
+                "imageId": str(image_uuid),
+                "createdAt": datetime.now(),
+                "location": f"http://127.0.0.1:8000/long_running_task/get-progress/{task_result.id}",
+            }
+
+            tasks_responses.append(task_response)
+            wait += 4
+
+        return tasks_responses
         

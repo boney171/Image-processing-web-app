@@ -8,6 +8,11 @@ urlpatterns = [
         name="start_long_running_task",
     ),
     path(
+        "submit-tasks/<int:task>",
+        LongRunningTaskViews.LongRunningTasksCreateView.as_view(),
+        name="start_long_running_task",
+    ),
+    path(
         "get-progress/<str:task_id>/",
         LongRunningTaskViews.LongRunningTaskProgressView.as_view(),
         name="get_long_running_task_progress",

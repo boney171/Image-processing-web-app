@@ -37,7 +37,6 @@ class ImageProcessingTask(Task):
 
         image_id = task_args[0] if task_args else None
         
-        print("Image instance: ", image_id)
         self.task_repository.create(task_id=task_id, image_id=image_id,percentage=0, result="null")
 
     def on_task_success(self, sender=None, result=None, **kwargs):
@@ -77,8 +76,6 @@ class ImageProcessingTask(Task):
         
         task_instance = self.task_repository.get(task_id)
 
-        print("From update_progress_in_db: ", task_instance)
-        print(task_instance.image_id)
         progress_data_model = TaskAPIModel(
             id=task_id,
             image_id=task_instance.image_id,
@@ -86,7 +83,6 @@ class ImageProcessingTask(Task):
             percentage=task_progress.info["percent"],
             result=None,
         )
-        
         self.task_repository.upsert(progress_data_model)
     
     def draw_rectangular(self, x0,x1,y0,y1, image, color, width):
@@ -95,5 +91,9 @@ class ImageProcessingTask(Task):
         draw.rectangle([x0, y0, x1, y1], outline=color, width=width)
         
         return draw
+    
+    def stop_task(self, task_id):
+        celery_app.control.revoke(task_id, terminate=True)
+    
     def run(self, image_id, *args, **kwargs):
         pass
