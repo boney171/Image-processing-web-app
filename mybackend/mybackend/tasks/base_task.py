@@ -76,7 +76,6 @@ class ImageProcessingTask(Task):
         
         task_instance = self.task_repository.get(task_id)
 
-        print(task_instance.image_id)
         progress_data_model = TaskAPIModel(
             id=task_id,
             image_id=task_instance.image_id,
@@ -92,5 +91,9 @@ class ImageProcessingTask(Task):
         draw.rectangle([x0, y0, x1, y1], outline=color, width=width)
         
         return draw
+    
+    def stop_task(self, task_id):
+        celery_app.control.revoke(task_id, terminate=True)
+    
     def run(self, image_id, *args, **kwargs):
         pass
