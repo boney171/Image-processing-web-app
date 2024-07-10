@@ -11,19 +11,17 @@ from PIL import Image, ImageDraw
 import numpy as np
 
 
-class HumanDetectingTask(ImageProcessingTask):
-    name = "human_detecting_task"
-
-    def __init__(self, task_repository, image_repository):
-        super().__init__(task_repository, image_repository)
-
 
 class HumanDetectingTask(ImageProcessingTask):
     name = "human_detecting_task"
-
+    max_retries = 3
+    default_retry_delay = 10
+    
     def __init__(self, task_repository, image_repository):
         super().__init__(task_repository, image_repository)
 
+    
+    
     def run(self, image_id, *args, **kwargs):
         try:
             total_steps = 10
@@ -54,20 +52,7 @@ class HumanDetectingTask(ImageProcessingTask):
             self.save_image(image, file_path)
         except Exception as e:
             print(f"Error: {e}")
-            raise e
 
         return "Done"
 
 
-# task_success.connect(on_task_success)
-
-
-# Step to create iomplement different task
-
-# How to create my own task
-
-# How to submit multiple jobs
-
-# Use debugger
-
-# Run celery as debugger

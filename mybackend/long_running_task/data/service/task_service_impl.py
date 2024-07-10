@@ -91,7 +91,15 @@ class TaskServiceImpl(TaskService):
             }
 
             tasks_responses.append(task_response)
-            wait += 4
+            wait += 0
 
         return tasks_responses
+        
+    def stop_long_running_task(self, task_id):
+        task_dto = self.task_repository.get(task_id)
+        
+        if task_dto is None:
+            raise NotFound(f"No task found with id: {task_id}")
+        
+        celery_app.control.revoke(task_id, terminate=True)
         

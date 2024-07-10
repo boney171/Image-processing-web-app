@@ -41,12 +41,9 @@ class LongRunningTasksCreateView(LongRunningTaskView):
             if serializer.is_valid():
                 image_ids = serializer.validated_data['image_ids']
 
-                print(image_ids)
                 responses = self.task_services.create_long_running_tasks(image_ids, task)
-                print(responses)
+
                 return Response(responses, status.HTTP_202_ACCEPTED)
-            else:
-                return Response({"message": "failed"}, status.HTTP_404_NOT_FOUND)
         except NotFound:
             return Response(
                 {"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND
@@ -65,4 +62,16 @@ class LongRunningTaskProgressView(LongRunningTaskView):
         except NotFound:
             return Response(
                 {"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+class LongRunningTaskDeleteView(LongRunningTaskView):
+    def delete( self, request, task_id):
+        try:
+            
+            self.task_services.stop_long_running_task(task_id)
+            
+            return Response( { "message": "Task deleted successfully"}, status.HTTP_204_NO_CONTENT)
+        except NotFound:
+             return Response(
+                {"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND
             )

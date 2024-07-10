@@ -16,3 +16,8 @@ class TaskService(ABC):
     @abstractmethod
     def create_long_running_task(self, image_id, task):
         raise NotImplementedError
+    
+    @abstractmethod
+    def stop_long_running_task(self, task_id):
+        raise NotImplementedError
+    

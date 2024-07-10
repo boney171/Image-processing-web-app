@@ -8,6 +8,7 @@ from celery.signals import (
     task_failure,
     before_task_publish,
     task_prerun,
+    task_revoked
 )
 from datetime import datetime
 from kink import di, inject
@@ -19,8 +20,7 @@ class ImageProcessingTask(Task):
 
     ignore_result = False
     name = "test_base_task"
-
-    @inject
+    
     def __init__(self, task_repository, image_repository):
         # Dependency injection, let this class access database operation on tasks and images
         self.task_repository = task_repository
@@ -30,6 +30,7 @@ class ImageProcessingTask(Task):
         task_prerun.connect(self.prerun_task)
         task_success.connect(self.on_task_success)
         task_failure.connect(self.on_task_failure)
+        task_revoked.connect(self.on_task_revoked)
 
     def prerun_task(self, sender=None, task_id=None, task=None, *args, **kwargs):
 
@@ -60,14 +61,20 @@ class ImageProcessingTask(Task):
         except self.task_repository.model.DoesNotExist:
             print(f"Task with id {sender.request.id} does not exist in the database.")
 
+    def on_task_revoked(self, sender=None, request=None, terminated=None, signum=None, expired=None, **kwargs):
+        if terminated:
+            task_dto = self.task_repository.get(request.id)
+            task_api = task_dto.to_api_model()
+            task_api.status = "REVOKED"
+            self.task_repository.upsert(task_api)
+    
     def load_image(self, image_id):
         image_dto = self.image_repository.get(image_id)
         
         path = f"media/{image_dto.file_path}"
             
         return Image.open(path), path
-
-
+    
     def save_image(self, image, location):
         image.save(location)
 
@@ -91,9 +98,6 @@ class ImageProcessingTask(Task):
         draw.rectangle([x0, y0, x1, y1], outline=color, width=width)
         
         return draw
-    
-    def stop_task(self, task_id):
-        celery_app.control.revoke(task_id, terminate=True)
     
     def run(self, image_id, *args, **kwargs):
         pass

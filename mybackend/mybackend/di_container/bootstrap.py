@@ -17,4 +17,4 @@ def bootstrap_di() -> None:
     di["task_repository"] = TaskRepositoryImpl()
     di["task_services"] = TaskServiceImpl( di["task_repository"], di["image_repository"])
 
-bootstrap_di()
+
