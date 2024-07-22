@@ -8,7 +8,7 @@ urlpatterns = [
         name="start_long_running_task",
     ),
     path(
-        "submit-tasks/<int:task>",
+        "submit-tasks/<str:task>",
         LongRunningTaskViews.LongRunningTasksCreateView.as_view(),
         name="start_long_running_tasks",
     ),
