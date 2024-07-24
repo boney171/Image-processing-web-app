@@ -56,5 +56,6 @@ I have a system of REST APIs that allow users to:
 3. **Delete Endpoint**
    - Receives a task ID in the URL. This endpoint checks if the task exists in the Redis server. If it does, it sends a revoke signal to stop the task; otherwise, it returns a not found error code.
 
-### Image Submission
-Users can submit images for processing through my user-friendly interface, ensuring a smooth and efficient workflow.
+### Demo
+
+[![Watch the video](![image](https://github.com/user-attachments/assets/d02673a2-4d20-45d0-933c-001bf841f9cc)](https://www.youtube.com/watch?v=example)
