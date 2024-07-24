@@ -5,13 +5,13 @@ import multiprocessing
 from celery import Celery
 from django.conf import settings
 from kink import di
-
+import os
+os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mybackend.settings')
-multiprocessing.set_start_method('spawn')
+multiprocessing.set_start_method('forkserver', force=True)
 app = Celery('mybackend')
 
 
-app.register_task(HumanDetection())
 
 app.conf.enable_utc = True
 
